@@ -1,10 +1,13 @@
 # Distributed Dependency-Aware Task Offloading and Service Caching in Cloudlet-Based Edge Computing
 
 Code for the paper *"Distributed Dependency-aware Task Offloading and Service Caching in
-Cloudlet-based Edge Computing Networks"* (Golzari Oskoui & Sansò, Polytechnique Montréal) — a
-**fully distributed** reinforcement-learning framework where each cloudlet independently decides
+Cloudlet-based Edge Computing Networks"* (Golzari Oskoui & Sansò, Polytechnique Montréal),
+published in **[IEEE Transactions on Services Computing, 2026](https://ieeexplore.ieee.org/abstract/document/11395623)** —
+a **fully distributed** reinforcement-learning framework where each cloudlet independently decides
 **where to run each task** of a DAG application **and which services to cache**, with no central
 controller and minimal communication overhead.
+
+📄 **Paper:** https://ieeexplore.ieee.org/abstract/document/11395623
 
 > **In one line:** per-cloudlet **DQN** agents, sped up by **guided action shaping** (bias early
 > exploration toward cloudlets that already cache the needed service), plus a lightweight
@@ -94,26 +97,23 @@ All results average over **10 independent runs** (random topology/parameters eac
 95% confidence intervals. Default scenario: **20 users, 10 cloudlets, 10 services**, DAGs from the
 **Alibaba Cluster Trace 2018**, cache capacity $K_s = 2$.
 
+> 📄 **The full result figures (convergence, ablation, latency-component radar, and all sensitivity
+> sweeps) are in the published paper:**
+> **[IEEE Xplore — *IEEE Transactions on Services Computing*, 2026](https://ieeexplore.ieee.org/abstract/document/11395623)**.
+> The findings are summarized below.
+
 ### Converges to the lowest completion time
 
-![Convergence of application finishing time: the Proposed Algorithm converges lowest (~0.075 s), below Greedy and all other learning and heuristic baselines](assets/latency_comparison2.jpg)
-
-*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
-
-The **Proposed Algorithm** (blue) converges to the lowest application finishing time (~0.075 s). Early
-on, the **Greedy** baseline leads — it always picks a cloudlet that already caches the service, avoiding
+The **Proposed Algorithm** converges to the lowest application finishing time (**~0.075 s**). Early on,
+the **Greedy** baseline leads — it always picks a cloudlet that already caches the service, avoiding
 loading delay from step one — but as training proceeds the proposed method learns the environment's
 resource distribution and overtakes every baseline, including the guided/unguided Actor-Critic and
 DQN-WDSA variants.
 
 ### Ablation — each component compounds (≈80% total reduction)
 
-![Ablation: static caching (red) vs. proposed dynamic caching (blue) across Nearest, simple DQN, service-aware, dependency+service-aware, and the full proposed method](assets/ablation.jpg)
-
-*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
-
 Starting from the non-learning **Nearest-server** baseline (~0.37 s) and adding one component at a time
-(blue bars = proposed dynamic caching):
+(with the proposed dynamic caching):
 
 | Configuration | Avg. completion time | vs. Nearest |
 |---|---|---|
@@ -123,41 +123,30 @@ Starting from the non-learning **Nearest-server** baseline (~0.37 s) and adding 
 | + dependency-awareness (predecessor destinations) | ~0.145 s | −60% |
 | + **guided action shaping** *(full method)* | **~0.075 s** | **−80%** |
 
-The two bars per group also isolate the **caching** design: at the full method, replacing **static
-caching** (red, ~0.25 s) with the **EMA-based dynamic caching** (blue, ~0.075 s) cuts completion time
-by roughly 70% — confirming caching carries much of the gain at every configuration.
+The ablation also isolates the **caching** design: at the full method, replacing **static caching**
+(~0.25 s) with the **EMA-based dynamic caching** (~0.075 s) cuts completion time by roughly 70% —
+confirming caching carries much of the gain at every configuration.
 
 ### Balances all latency components
 
-![Radar chart of latency components (computation, service, waiting, total) per method: the Proposed Algorithm has the smallest total latency by balancing all components](assets/hexagonal_radar_chart_shares.jpg)
-
-*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
-
 Breaking finishing time into **computation / service-loading / waiting** latency shows the trade-offs:
-**Greedy** (black) drives service latency to zero but spikes on waiting; others over-pay on one axis.
-The **Proposed Algorithm** (blue) **doesn't minimize any single component** — it balances all three to
-reach the smallest **total** latency.
+**Greedy** drives service latency to zero but spikes on waiting; others over-pay on one axis. The
+**Proposed Algorithm** **doesn't minimize any single component** — it balances all three to reach the
+smallest **total** latency.
 
 ### Robust across system conditions
 
-Sensitivity sweeps confirm the method stays best as conditions change (Proposed in blue throughout):
+Sensitivity sweeps confirm the method stays best as conditions change:
 
-| | |
-|:---:|:---:|
-| ![Average finishing time vs. number of cloudlets](assets/nserver.jpg) | ![Average finishing time vs. number of services](assets/nservice.jpg) |
-| **More cloudlets** → lower latency; the proposed method exploits the larger placement/caching space best. | **More services** → latency rises for all; the proposed method degrades gracefully and stays competitive with greedy once services exceed network cache capacity ($S\times K_s = 20$). |
-| ![Average finishing time vs. task data size](assets/maxdatalength.jpg) | ![Average finishing time vs. service data size](assets/maxservicelength.jpg) |
-| **Larger task data** → proposed method is least sensitive (data-aware placement). | **Larger service size** → service-aware methods (proposed, greedy) grow slowest. |
-
-*The four sweeps above: © 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
-
-![Average finishing time vs. inter-cloudlet bandwidth](assets/maxratebetweenservers.jpg)
-
-*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
-
-**Higher inter-cloudlet bandwidth** → service-loading matters less, so the gaps between methods shrink;
-the agent *automatically* detects this regime and adapts its policy, keeping the best performance across
-all bandwidth levels.
+- **More cloudlets** → lower latency; the proposed method exploits the larger placement/caching space
+  best.
+- **More services** → latency rises for all; the proposed method degrades gracefully and stays
+  competitive with greedy once services exceed network cache capacity ($S\times K_s = 20$).
+- **Larger task data** → proposed method is least sensitive (data-aware placement).
+- **Larger service size** → service-aware methods (proposed, greedy) grow slowest.
+- **Higher inter-cloudlet bandwidth** → service-loading matters less, so the gaps between methods
+  shrink; the agent *automatically* detects this regime and adapts its policy, staying best across all
+  bandwidth levels.
 
 ### Orders-of-magnitude cheaper than optimal
 
@@ -247,6 +236,7 @@ If you use this work, please cite:
 
 > M. R. Golzari Oskoui and B. Sansò, "Distributed Dependency-Aware Task Offloading and Service Caching
 > in Cloudlet-Based Edge Computing Networks," *IEEE Transactions on Services Computing*, 2026.
+> [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11395623)
 
 ```bibtex
 @article{oskoui2026distributed,
@@ -258,10 +248,12 @@ If you use this work, please cite:
 }
 ```
 
-**Figure credits.** All figures in this README are from the published article and are reproduced here
-by the authors. © 2026 IEEE. Reprinted, with permission, from M. R. Golzari Oskoui and B. Sansò,
-"Distributed Dependency-Aware Task Offloading and Service Caching in Cloudlet-Based Edge Computing
-Networks," *IEEE Transactions on Services Computing*, 2026.
+**Figure credits.** The two illustrative figures in this README (the application-DAG example and the
+network topology) are from the published article, reproduced here by the authors. © 2026 IEEE.
+Reprinted, with permission, from M. R. Golzari Oskoui and B. Sansò, "Distributed Dependency-Aware Task
+Offloading and Service Caching in Cloudlet-Based Edge Computing Networks," *IEEE Transactions on
+Services Computing*, 2026. **All result figures are available in the paper on
+[IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11395623).**
 
 ## Authors
 
