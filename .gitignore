@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Model checkpoints / large binaries
+*.pt
+*.zip
+
+# SLURM / cluster logs
+*.out
+slurm-*.out
+
+# Generated results & figures (regenerate with the scripts)
+results/
+outputs/
+plots/
+*.pdf
+*.eps
+
+# OS
+.DS_Store
+Thumbs.db

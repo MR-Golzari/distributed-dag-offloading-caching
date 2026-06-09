@@ -1,0 +1,17 @@
+# Core — required to run the simulator and DQN/AC agents
+numpy
+scipy
+pandas
+matplotlib
+networkx
+simpy
+tqdm
+torch
+
+# ILP / optimal reference (optional). PuLP ships the open-source CBC solver.
+pulp
+
+# Optional — only for specific scripts:
+#   tensorflow / keras  -> legacy Keras-based agents
+#   telepot             -> Telegram progress notifications (telegram.py)
+# Install manually if you use those entry points.

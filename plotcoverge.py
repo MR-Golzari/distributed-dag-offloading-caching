@@ -1,0 +1,11 @@
+    plt.figure()
+    plt.plot(range(NumberofEpisodes), moving_averages.values(), '-',label='Algorithm')
+    plt.plot(range(NumberofEpisodes), Average_of_optimal_value_average.values(), '--',label='Optimal')
+    plt.plot(range(NumberofEpisodes), Average_of_dp_value_average.values(), '--',label='DP')
+
+    plt.xlabel('Iteration')
+    plt.ylabel('Average of finish time')
+    plt.grid()
+    plt.legend()
+    plt.savefig(filename_png+'/moving_averages.pdf',dpi=300)
+    print(filename_png)
