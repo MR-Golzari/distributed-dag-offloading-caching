@@ -29,6 +29,13 @@ Solving them jointly and optimally is **NP-hard** with a search space of $\mathc
 on a **centralized controller with global knowledge**, which doesn't scale and adds communication
 overhead. This work asks: *can cloudlets make good offloading and caching decisions locally?*
 
+![Autonomous-vehicle DAG application: dependent tasks, each needing a service, are offloaded across edge servers that cache different services](assets/journal1.png)
+
+*Example: a self-driving application as a DAG of dependent tasks. Each task needs a specific service,
+but each cloudlet caches only some — so offloading (which server runs a task) and caching (which
+servers hold which services) are coupled, and dependent tasks on different servers transfer data over
+the inter-server links.*
+
 ![Cloudlet topology: cloudlets (red) and users (blue) distributed over the service area, connected by an inter-cloudlet backhaul network](assets/topology.png)
 
 *Simulated environment: cloudlets (red) and users (blue) over a 1 km × 1 km area; black lines are the
@@ -85,39 +92,60 @@ All results average over **10 independent runs** (random topology/parameters eac
 95% confidence intervals. Default scenario: **20 users, 10 cloudlets, 10 services**, DAGs from the
 **Alibaba Cluster Trace 2018**, cache capacity $K_s = 2$.
 
+### Converges to the lowest completion time
+
+![Convergence of application finishing time: the Proposed Algorithm converges lowest (~0.075 s), below Greedy and all other learning and heuristic baselines](assets/latency_comparison2.jpg)
+
+The **Proposed Algorithm** (blue) converges to the lowest application finishing time (~0.075 s). Early
+on, the **Greedy** baseline leads — it always picks a cloudlet that already caches the service, avoiding
+loading delay from step one — but as training proceeds the proposed method learns the environment's
+resource distribution and overtakes every baseline, including the guided/unguided Actor-Critic and
+DQN-WDSA variants.
+
 ### Ablation — each component compounds (≈80% total reduction)
 
-Starting from the non-learning **Nearest-server** baseline (~0.37 s) and adding one component at a time:
+![Ablation: static caching (red) vs. proposed dynamic caching (blue) across Nearest, simple DQN, service-aware, dependency+service-aware, and the full proposed method](assets/ablation.jpg)
+
+Starting from the non-learning **Nearest-server** baseline (~0.37 s) and adding one component at a time
+(blue bars = proposed dynamic caching):
 
 | Configuration | Avg. completion time | vs. Nearest |
 |---|---|---|
 | Nearest-server baseline | ~0.37 s | — |
 | + basic DQN (task features only) | ~0.23 s | −40% |
 | + service-awareness (current + successor services) | ~0.21 s | −43% |
-| + dependency-awareness (predecessor destinations) | ~0.15 s | −59% |
+| + dependency-awareness (predecessor destinations) | ~0.145 s | −60% |
 | + **guided action shaping** *(full method)* | **~0.075 s** | **−80%** |
 
-And **dynamic vs. static caching:** replacing static caching (~0.25 s) with the EMA-based distributed
-caching rule drops completion time to **~0.075 s** — confirming the caching design carries much of the
-gain.
+The two bars per group also isolate the **caching** design: at the full method, replacing **static
+caching** (red, ~0.25 s) with the **EMA-based dynamic caching** (blue, ~0.075 s) cuts completion time
+by roughly 70% — confirming caching carries much of the gain at every configuration.
 
 ### Balances all latency components
 
-A component breakdown (computation / service-loading / waiting latency) shows the greedy baseline drives
-service-loading to zero but pays elsewhere; the proposed method **doesn't minimize any single component**
-— it balances all three to reach the lowest total time.
+![Radar chart of latency components (computation, service, waiting, total) per method: the Proposed Algorithm has the smallest total latency by balancing all components](assets/hexagonal_radar_chart_shares.jpg)
+
+Breaking finishing time into **computation / service-loading / waiting** latency shows the trade-offs:
+**Greedy** (black) drives service latency to zero but spikes on waiting; others over-pay on one axis.
+The **Proposed Algorithm** (blue) **doesn't minimize any single component** — it balances all three to
+reach the smallest **total** latency.
 
 ### Robust across system conditions
 
-Sweeps confirm the method stays best as conditions change:
-- **More cloudlets** → lower latency (more placement/caching flexibility); the proposed method exploits
-  the larger decision space better than greedy/heuristics.
-- **More services** → latency rises for all; the proposed method degrades gracefully and, once services
-  exceed total network cache capacity ($S \times K_s = 20$), stays competitive with greedy.
-- **Larger data sizes** → proposed method is least sensitive (data-aware placement).
-- **Larger service sizes** → service-aware methods (proposed, greedy) grow slowest.
-- **Higher inter-cloudlet bandwidth** → gaps shrink (service-loading matters less), and the agent
-  *automatically* adapts its policy to the regime.
+Sensitivity sweeps confirm the method stays best as conditions change (Proposed in blue throughout):
+
+| | |
+|:---:|:---:|
+| ![Average finishing time vs. number of cloudlets](assets/nserver.jpg) | ![Average finishing time vs. number of services](assets/nservice.jpg) |
+| **More cloudlets** → lower latency; the proposed method exploits the larger placement/caching space best. | **More services** → latency rises for all; the proposed method degrades gracefully and stays competitive with greedy once services exceed network cache capacity ($S\times K_s = 20$). |
+| ![Average finishing time vs. task data size](assets/maxdatalength.jpg) | ![Average finishing time vs. service data size](assets/maxservicelength.jpg) |
+| **Larger task data** → proposed method is least sensitive (data-aware placement). | **Larger service size** → service-aware methods (proposed, greedy) grow slowest. |
+
+![Average finishing time vs. inter-cloudlet bandwidth](assets/maxratebetweenservers.jpg)
+
+**Higher inter-cloudlet bandwidth** → service-loading matters less, so the gaps between methods shrink;
+the agent *automatically* detects this regime and adapts its policy, keeping the best performance across
+all bandwidth levels.
 
 ### Orders-of-magnitude cheaper than optimal
 
