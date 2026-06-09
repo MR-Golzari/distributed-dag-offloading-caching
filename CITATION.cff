@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the following paper."
+title: "Distributed Dependency-Aware Task Offloading and Service Caching in Cloudlet-Based Edge Computing Networks"
+authors:
+  - family-names: "Golzari Oskoui"
+    given-names: "Mohammad Reza"
+    orcid: "https://orcid.org/0009-0001-2277-3544"
+  - family-names: "Sansò"
+    given-names: "Brunilde"
+    orcid: "https://orcid.org/0000-0002-6055-4625"
+year: 2026
+preferred-citation:
+  type: article
+  title: "Distributed Dependency-Aware Task Offloading and Service Caching in Cloudlet-Based Edge Computing Networks"
+  authors:
+    - family-names: "Golzari Oskoui"
+      given-names: "Mohammad Reza"
+      orcid: "https://orcid.org/0009-0001-2277-3544"
+    - family-names: "Sansò"
+      given-names: "Brunilde"
+      orcid: "https://orcid.org/0000-0002-6055-4625"
+  journal: "IEEE Transactions on Services Computing"
+  year: 2026
+  publisher:
+    name: "IEEE"

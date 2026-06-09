@@ -229,9 +229,25 @@ Python · PyTorch · SimPy · NetworkX · NumPy / SciPy / pandas · Matplotlib �
 
 ---
 
-## Citation / Authors
+## Citation
+
+If you use this work, please cite:
+
+> M. R. Golzari Oskoui and B. Sansò, "Distributed Dependency-Aware Task Offloading and Service Caching
+> in Cloudlet-Based Edge Computing Networks," *IEEE Transactions on Services Computing*, 2026.
+
+```bibtex
+@article{oskoui2026distributed,
+  title   = {Distributed dependency-aware task offloading and service caching in cloudlet-based edge computing networks},
+  author  = {Oskoui, Mohammad Reza Golzari and Sans{\`o}, Brunilde},
+  journal = {IEEE Transactions on Services Computing},
+  year    = {2026},
+  publisher = {IEEE}
+}
+```
+
+## Authors
 
 **Mohammad Reza Golzari Oskoui** and **Prof. Brunilde Sansò** — Department of Electrical Engineering,
 Polytechnique Montréal. Supported by NSERC (DG 05734). This journal paper extends the authors' earlier
 MobiWac conference work by adding service caching and a distributed, guided learning framework.
-*(Please cite the published version — see the paper for the full reference.)*
