@@ -35,12 +35,14 @@ overhead. This work asks: *can cloudlets make good offloading and caching decisi
 but each cloudlet caches only some — so offloading (which server runs a task) and caching (which
 servers hold which services) are coupled, and dependent tasks on different servers transfer data over
 the inter-server links.*
+<br>*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
 
 ![Cloudlet topology: cloudlets (red) and users (blue) distributed over the service area, connected by an inter-cloudlet backhaul network](assets/topology.png)
 
 *Simulated environment: cloudlets (red) and users (blue) over a 1 km × 1 km area; black lines are the
 inter-cloudlet backhaul. Each user offloads its DAG to its nearest cloudlet, which then decides
 placement across the network.*
+<br>*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
 
 ---
 
@@ -96,6 +98,8 @@ All results average over **10 independent runs** (random topology/parameters eac
 
 ![Convergence of application finishing time: the Proposed Algorithm converges lowest (~0.075 s), below Greedy and all other learning and heuristic baselines](assets/latency_comparison2.jpg)
 
+*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
+
 The **Proposed Algorithm** (blue) converges to the lowest application finishing time (~0.075 s). Early
 on, the **Greedy** baseline leads — it always picks a cloudlet that already caches the service, avoiding
 loading delay from step one — but as training proceeds the proposed method learns the environment's
@@ -105,6 +109,8 @@ DQN-WDSA variants.
 ### Ablation — each component compounds (≈80% total reduction)
 
 ![Ablation: static caching (red) vs. proposed dynamic caching (blue) across Nearest, simple DQN, service-aware, dependency+service-aware, and the full proposed method](assets/ablation.jpg)
+
+*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
 
 Starting from the non-learning **Nearest-server** baseline (~0.37 s) and adding one component at a time
 (blue bars = proposed dynamic caching):
@@ -125,6 +131,8 @@ by roughly 70% — confirming caching carries much of the gain at every configur
 
 ![Radar chart of latency components (computation, service, waiting, total) per method: the Proposed Algorithm has the smallest total latency by balancing all components](assets/hexagonal_radar_chart_shares.jpg)
 
+*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
+
 Breaking finishing time into **computation / service-loading / waiting** latency shows the trade-offs:
 **Greedy** (black) drives service latency to zero but spikes on waiting; others over-pay on one axis.
 The **Proposed Algorithm** (blue) **doesn't minimize any single component** — it balances all three to
@@ -141,7 +149,11 @@ Sensitivity sweeps confirm the method stays best as conditions change (Proposed 
 | ![Average finishing time vs. task data size](assets/maxdatalength.jpg) | ![Average finishing time vs. service data size](assets/maxservicelength.jpg) |
 | **Larger task data** → proposed method is least sensitive (data-aware placement). | **Larger service size** → service-aware methods (proposed, greedy) grow slowest. |
 
+*The four sweeps above: © 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
+
 ![Average finishing time vs. inter-cloudlet bandwidth](assets/maxratebetweenservers.jpg)
+
+*© 2026 IEEE. Reprinted from [Oskoui & Sansò, IEEE Trans. Services Computing, 2026](#citation).*
 
 **Higher inter-cloudlet bandwidth** → service-loading matters less, so the gaps between methods shrink;
 the agent *automatically* detects this regime and adapts its policy, keeping the best performance across
@@ -218,7 +230,7 @@ a2c.py, rl.py, lstm.py      # Actor-Critic / alternative RL baselines
 gat.py, gcn.py              # graph-encoder baselines
 optimization.py, solver*.py # ILP / optimal reference
 plot*.py, results.py        # analysis & plotting
-Montage_25.json, dag_uniform.json   # sample / synthetic DAGs
+dag_uniform.json            # synthetic DAG instance
 ```
 
 ---
@@ -245,6 +257,11 @@ If you use this work, please cite:
   publisher = {IEEE}
 }
 ```
+
+**Figure credits.** All figures in this README are from the published article and are reproduced here
+by the authors. © 2026 IEEE. Reprinted, with permission, from M. R. Golzari Oskoui and B. Sansò,
+"Distributed Dependency-Aware Task Offloading and Service Caching in Cloudlet-Based Edge Computing
+Networks," *IEEE Transactions on Services Computing*, 2026.
 
 ## Authors
 
